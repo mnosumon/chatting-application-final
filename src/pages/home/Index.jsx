@@ -9,11 +9,11 @@ const Home = () => {
       <div className="p-4 shadow-md rounded-md">
         <AllUser />
       </div>
-      <div className="flex justify-between">
-        <div className="">
+      <div className="grid grid-cols-2 gap-5">
+        <div className="px-4 shadow-md rounded-md">
           <FriendsReq />
         </div>
-        <div className="">
+        <div className="px-8">
           <MyFriend />
         </div>
       </div>
