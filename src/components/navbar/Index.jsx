@@ -23,9 +23,12 @@ const Navbar = () => {
         </div>
         <h2 className="font-inter_semiBold text-xl text-[#FFF] mt-3">Sumon</h2>
       </div>
-      <div className="flex flex-col gap-16">
-        <div className="text-6xl text-white">
-          <HomeIcon />
+      <div className="flex flex-col gap-16 ">
+        <div className="text-6xl text-white relative">
+          <div className="">
+            <HomeIcon />
+          </div>
+          <div className="w-[12%] h-full bg-white absolute top-0 -right-full"></div>
         </div>
         <div className="text-6xl text-white">
           <MessageIcon />
