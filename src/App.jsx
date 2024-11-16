@@ -7,6 +7,7 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
+import Navbar from "./components/navbar/Index";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -14,6 +15,7 @@ const App = () => {
       <Route>
         <Route path="/registration" element={<Registration />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/navbar" element={<Navbar />} />
       </Route>
     )
   );
