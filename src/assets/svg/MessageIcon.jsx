@@ -17,14 +17,14 @@ export const MessageIcon = () => {
       />
       <path
         d="M15.1667 17.3333H36.8334"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M15.1667 28.1667H28.1667"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinecap="round"
         strokeLinejoin="round"

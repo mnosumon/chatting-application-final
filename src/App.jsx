@@ -8,14 +8,16 @@ import {
   Route,
 } from "react-router-dom";
 import Navbar from "./components/navbar/Index";
+import RouteLayout from "./routeLayout";
+import Home from "./pages/home/Index";
+import Message from "./pages/message/Index";
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route>
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/navbar" element={<Navbar />} />
+      <Route element={<RouteLayout />}>
+        <Route index path="/" element={<Home />} />
+        <Route path="/message" element={<Message />} />
       </Route>
     )
   );
