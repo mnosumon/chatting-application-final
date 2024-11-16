@@ -12,16 +12,14 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        {/* <Route path="/registration" element={<Registration />} /> */}
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/login" element={<Login />} />
       </Route>
     )
   );
   return (
     <>
-      {/* <RouterProvider router={router} />{" "} */}
-      <div className="w-full">
-        <Registration />{" "}
-      </div>
+      <RouterProvider router={router} />
     </>
   );
 };
