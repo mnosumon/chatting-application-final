@@ -4,6 +4,7 @@ import { HomeIcon } from "../../assets/svg/HomeIcon";
 import { MessageIcon } from "../../assets/svg/MessageIcon";
 import { BackSquerIcon } from "../../assets/svg/BackSquerIcon";
 import AvaterImg from "../../assets/image/natural01.jpg";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -25,14 +26,14 @@ const Navbar = () => {
       </div>
       <div className="flex flex-col gap-16 ">
         <div className="text-6xl text-white relative">
-          <div className="">
+          <NavLink>
             <HomeIcon />
-          </div>
+          </NavLink>
           <div className="w-[12%] h-full bg-white absolute top-0 -right-full"></div>
         </div>
-        <div className="text-6xl text-white">
+        <NavLink className="text-6xl text-white">
           <MessageIcon />
-        </div>
+        </NavLink>
       </div>
       <div className="flex items-center gap-2">
         <div className="text-2xl text-white">
