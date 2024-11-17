@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import InputWarning from "../utilities/InputWarning";
 import { signInForm } from "../../formValidation/signInForm";
 import { useDispatch } from "react-redux";
-import { signIn } from "../../features/slice/registrationSlice";
+import { signInUser } from "../../features/slice/registrationSlice";
 const initialState = {
   email: "",
   password: "",
@@ -32,7 +32,7 @@ const LoginForm = ({ toast }) => {
     )
       .then(({ user }) => {
         if (user.emailVerified) {
-          dispatch(signIn(user));
+          dispatch(signInUser(user));
           localStorage.setItem("user", JSON.stringify(user));
           setTimeout(() => {
             navigate("/");
