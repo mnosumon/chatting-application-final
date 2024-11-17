@@ -4,30 +4,54 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import InputWarning from "../utilities/InputWarning";
 import { signInForm } from "../../formValidation/signInForm";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../features/slice/registrationSlice";
 const initialState = {
   email: "",
   password: "",
 };
 
-const LoginForm = () => {
+const LoginForm = ({ toast }) => {
+  const dispatch = useDispatch();
   const auth = getAuth();
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: signInForm,
-    onSubmit: () => {},
+    onSubmit: () => {
+      signInAuth();
+    },
   });
 
-  // signInWithEmailAndPassword(auth, formik, password)
-  //   .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     // ...
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //   });
+  const signInAuth = () => {
+    signInWithEmailAndPassword(
+      auth,
+      formik.values.email,
+      formik.values.password
+    )
+      .then(({ user }) => {
+        if (user.emailVerified) {
+          dispatch(signIn(user));
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          toast.error("Pleas verified your email", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
   const { errors, touched } = formik;
 
   return (

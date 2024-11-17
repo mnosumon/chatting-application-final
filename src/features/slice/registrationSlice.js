@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: 0,
+  value: JSON.parse(localStorage.getItem("user")) || null,
 };
 
 export const registrationSlice = createSlice({
   name: "signUpUser",
   initialState,
   reducers: {
-    signUp: (state, actions) => {
+    signIn: (state, actions) => {
       state.value = actions.payload;
     },
   },
 });
 
-export const { signUp } = registrationSlice.actions;
+export const { signIn } = registrationSlice.actions;
 
 export default registrationSlice.reducer;
