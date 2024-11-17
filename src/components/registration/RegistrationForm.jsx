@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { signUpForm } from "../../formValidation/signUpForm";
 import InputWarning from "../utilities/InputWarning";
+import { useSelector } from "react-redux";
 
 const initialState = {
   name: "",
@@ -11,6 +12,9 @@ const initialState = {
 };
 
 const RegistrationForm = () => {
+  const user = useSelector((state) => state.signUpUser.value);
+  console.log(user);
+
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: signUpForm,
