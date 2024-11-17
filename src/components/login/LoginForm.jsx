@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import InputWarning from "../utilities/InputWarning";
@@ -13,6 +13,7 @@ const initialState = {
 
 const LoginForm = ({ toast }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const auth = getAuth();
 
   const formik = useFormik({
@@ -33,6 +34,9 @@ const LoginForm = ({ toast }) => {
         if (user.emailVerified) {
           dispatch(signIn(user));
           localStorage.setItem("user", JSON.stringify(user));
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
         } else {
           toast.error("Pleas verified your email", {
             position: "top-right",
