@@ -1,9 +1,14 @@
 import { useFormik } from "formik";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpForm } from "../../formValidation/signUpForm";
 import InputWarning from "../utilities/InputWarning";
 import { useSelector } from "react-redux";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 const initialState = {
   name: "",
@@ -11,17 +16,57 @@ const initialState = {
   password: "",
 };
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ toast }) => {
   const user = useSelector((state) => state.signUpUser.value);
-  console.log(user);
+  const auth = getAuth();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: signUpForm,
-    onSubmit: (values) => {
-      console.log("Submited");
+    onSubmit: () => {
+      registrationAuth();
     },
   });
+
+  const registrationAuth = () => {
+    createUserWithEmailAndPassword(
+      auth,
+      formik.values.email,
+      formik.values.password
+    )
+      .then((userCredential) => {
+        sendEmailVerification(auth.currentUser).then(() => {
+          toast.success("Registration successfull", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        });
+      })
+      .catch((error) => {
+        if (error.message.includes("auth/email-already-in-use")) {
+          toast.error("This email already used", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      });
+  };
   const { errors, touched } = formik;
 
   return (
