@@ -26,12 +26,12 @@ const Navbar = () => {
       </div>
       <div className="flex flex-col gap-16 ">
         <div className="text-6xl text-white relative">
-          <NavLink>
+          <NavLink to="/">
             <HomeIcon />
           </NavLink>
           <div className="w-[12%] h-full bg-white absolute top-0 -right-full"></div>
         </div>
-        <NavLink className="text-6xl text-white">
+        <NavLink to="/message" className="text-6xl text-white">
           <MessageIcon />
         </NavLink>
       </div>
