@@ -14,7 +14,6 @@ import { createPortal } from "react-dom";
 const Navbar = () => {
   const [modalShow, setModalShow] = useState(false);
   const user = useSelector((state) => state.signUpUser.value);
-  console.log(user);
 
   const auth = getAuth();
   const dispatch = useDispatch();
