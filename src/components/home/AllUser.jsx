@@ -25,6 +25,8 @@ const AllUser = () => {
     });
   }, [db]);
 
+  const findUser = users.filter((item) => item.id !== user.uid);
+
   const handleReq = (data) => {
     console.log(data);
   };
@@ -42,7 +44,7 @@ const AllUser = () => {
             placeholder="Search user..."
           />
         </div>
-        {users.map((item) => (
+        {findUser.map((item) => (
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 rounded-full overflow-hidden">

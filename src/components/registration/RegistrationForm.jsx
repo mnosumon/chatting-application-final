@@ -19,8 +19,6 @@ const initialState = {
 };
 
 const RegistrationForm = ({ toast }) => {
-  const user = useSelector((state) => state.signUpUser.value);
-
   const auth = getAuth();
   const db = getDatabase();
   const navigate = useNavigate();
@@ -41,6 +39,7 @@ const RegistrationForm = ({ toast }) => {
     )
       .then((items) => {
         const item = items.user;
+
         updateProfile(auth.currentUser, {
           displayName: formik.values.name,
         }).then(() => {
@@ -61,7 +60,7 @@ const RegistrationForm = ({ toast }) => {
               }, 2000);
             })
             .then(() => {
-              set(ref(db, "users/" + user.uid), {
+              set(ref(db, "users/" + item.uid), {
                 name: item.displayName,
                 email: item.email,
               });
