@@ -42,7 +42,6 @@ const Navbar = () => {
             >
               <UploadIcon />
             </div>
-            {createPortal(modalShow && <Modal />, document.body)}
           </div>
         </div>
         <h2 className="font-inter_semiBold text-xl text-[#FFF] mt-3">Sumon</h2>
@@ -69,6 +68,7 @@ const Navbar = () => {
           Logout
         </button>
       </div>
+      {createPortal(<Modal setModalShow={setModalShow} />, document.body)}
     </>
   );
 };
