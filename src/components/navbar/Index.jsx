@@ -5,7 +5,7 @@ import { MessageIcon } from "../../assets/svg/MessageIcon";
 import { BackSquerIcon } from "../../assets/svg/BackSquerIcon";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOutUser } from "../../features/slice/registrationSlice";
 import { getAuth, signOut } from "firebase/auth";
 import Modal from "./modal/Modal";
@@ -13,6 +13,9 @@ import { createPortal } from "react-dom";
 
 const Navbar = () => {
   const [modalShow, setModalShow] = useState(false);
+  const user = useSelector((state) => state.signUpUser.value);
+  console.log(user);
+
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,9 +31,9 @@ const Navbar = () => {
   };
   return (
     <>
-      <div>
-        <div className="relative">
-          <div className="w-20 h-20 rounded-full overflow-hidden">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-20 h-20 relative">
+          <div className="w-full h-full rounded-full overflow-hidden ">
             <img
               className="h-full w-full object-cover"
               src={AvaterImg}
@@ -44,7 +47,9 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <h2 className="font-inter_semiBold text-xl text-[#FFF] mt-3">Sumon</h2>
+        <h2 className="font-inter_semiBold text-xl text-[#FFF] mt-3">
+          {user.displayName}
+        </h2>
       </div>
       <div className="flex flex-col gap-16 ">
         <div className="text-6xl text-white relative">
