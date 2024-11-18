@@ -8,7 +8,9 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 const initialState = {
   name: "",
@@ -18,7 +20,9 @@ const initialState = {
 
 const RegistrationForm = ({ toast }) => {
   const user = useSelector((state) => state.signUpUser.value);
+
   const auth = getAuth();
+  const db = getDatabase();
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -35,21 +39,33 @@ const RegistrationForm = ({ toast }) => {
       formik.values.email,
       formik.values.password
     )
-      .then((userCredential) => {
-        sendEmailVerification(auth.currentUser).then(() => {
-          toast.success("Registration successfull", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
+      .then((items) => {
+        const item = items.user;
+        updateProfile(auth.currentUser, {
+          displayName: formik.values.name,
+        }).then(() => {
+          sendEmailVerification(auth.currentUser)
+            .then(() => {
+              toast.success("Registration successfull", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              setTimeout(() => {
+                navigate("/login");
+              }, 2000);
+            })
+            .then(() => {
+              set(ref(db, "users/" + user.uid), {
+                name: item.displayName,
+                email: item.email,
+              });
+            });
         });
       })
       .catch((error) => {

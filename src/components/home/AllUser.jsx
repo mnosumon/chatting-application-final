@@ -2,8 +2,11 @@ import React from "react";
 import TitleHeading from "../utilities/TitleHeading";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { AddFriendIcon } from "../../assets/svg/AddFriendIcon";
+import { useSelector } from "react-redux";
 
 const AllUser = () => {
+  const user = useSelector((state) => state.signUpUser.value);
+
   return (
     <>
       <div className="px-3">
