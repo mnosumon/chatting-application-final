@@ -1,7 +1,7 @@
 import React from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
-const CropModal = ({ Cropper, cropperRef, image, getCropData }) => {
+const CropModal = ({ Cropper, cropperRef, image, getCropData, setImage }) => {
   return (
     <div className="w-full h-screen fixed bg-[#8d88888d] flex items-center justify-center">
       <div className="w-[33%] bg-white rounded-md">
@@ -9,7 +9,10 @@ const CropModal = ({ Cropper, cropperRef, image, getCropData }) => {
           <div className="w-20 h-20 overflow-hidden rounded-full mx-auto">
             <div className="img-preview w-full h-full object-cover" />
           </div>
-          <div className="absolute right-1 top-1 text-2xl cursor-pointer">
+          <div
+            onClick={() => setImage()}
+            className="absolute right-1 top-1 text-2xl cursor-pointer"
+          >
             <IoMdCloseCircleOutline />
           </div>
         </div>

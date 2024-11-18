@@ -5,12 +5,28 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import CropModal from "./CropModal";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadString,
+} from "firebase/storage";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuth, updateProfile } from "firebase/auth";
+import { signInUser } from "../../../features/slice/registrationSlice";
 
 const Modal = ({ setModalShow }) => {
   const [image, setImage] = useState();
   const [cropData, setCropData] = useState("");
+  const user = useSelector((state) => state.signUpUser.value);
   const choesRef = useRef();
   const cropperRef = useRef();
+  const auth = getAuth();
+  const storage = getStorage();
+  const storageRef = ref(storage, user.uid);
+  const dispatch = useDispatch();
+
+  // const uploadTask = uploadBytesResumable(storageRef, file);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -29,6 +45,27 @@ const Modal = ({ setModalShow }) => {
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== "undefined") {
       setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      const message4 = cropperRef.current?.cropper
+        .getCroppedCanvas()
+        .toDataURL();
+      uploadString(storageRef, message4, "data_url").then((snapshot) => {
+        getDownloadURL(storageRef).then((downloadURL) => {
+          updateProfile(auth.currentUser, {
+            photoURL: downloadURL,
+          })
+            .then(() => {
+              dispatch(signInUser({ ...user, photoURL: downloadURL }));
+              localStorage.setItem(
+                "user",
+                JSON.stringify({ ...user, photoURL: downloadURL })
+              );
+              setModalShow(false);
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });
+        });
+      });
     }
   };
 

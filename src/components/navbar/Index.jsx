@@ -12,7 +12,7 @@ import Modal from "./modal/Modal";
 import { createPortal } from "react-dom";
 
 const Navbar = () => {
-  const [modalShow, setModalShow] = useState(true);
+  const [modalShow, setModalShow] = useState(false);
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -68,7 +68,8 @@ const Navbar = () => {
           Logout
         </button>
       </div>
-      {createPortal(<Modal setModalShow={setModalShow} />, document.body)}
+      {modalShow &&
+        createPortal(<Modal setModalShow={setModalShow} />, document.body)}
     </>
   );
 };
