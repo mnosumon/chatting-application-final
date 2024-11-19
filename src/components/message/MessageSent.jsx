@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { MicrophoneIcon } from "../../assets/svg/MicrophoneIcon";
 import { EmojiIcon } from "../../assets/svg/EmojiIcon";
 import { GellaryIcon } from "../../assets/svg/GellaryIcon";
 import { useSelector } from "react-redux";
+import { getDatabase, push, ref, set } from "firebase/database";
 
 const MessageSent = () => {
   const friend = useSelector((state) => state.singleFriend.value);
-  console.log(friend.status);
+  const user = useSelector((state) => state.signUpUser.value);
+  const [text, setText] = useState("");
+  console.log(friend);
+  console.log(user);
+
+  const db = getDatabase();
 
   const handleSent = () => {
     if (friend.status === "single") {
-      console.log("akjdhfs");
+      set(push(ref(db, "message/")), {
+        whoSenderID: user.uid,
+        whoSenderName: user.displayName,
+        whoRecieverID: friend.id,
+        whoRecieverName: friend.name,
+        content: text,
+      });
     }
   };
 
@@ -44,6 +56,7 @@ const MessageSent = () => {
         </div>
         <div className=" font-inter_regular text-lg text-[#484848]">
           <input
+            onChange={(e) => setText(e.target.value)}
             className="p-3 w-full border border-[#D8D8D8] outline-none rounded-md"
             type="text"
             placeholder="type here . . ."
