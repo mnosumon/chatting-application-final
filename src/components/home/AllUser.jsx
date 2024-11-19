@@ -3,11 +3,12 @@ import TitleHeading from "../utilities/TitleHeading";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { AddFriendIcon } from "../../assets/svg/AddFriendIcon";
 import { useSelector } from "react-redux";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
 
 const AllUser = () => {
   const user = useSelector((state) => state.signUpUser.value);
   const [users, setUsers] = useState([]);
+  const [cancelReq, setCancelReq] = useState([]);
 
   const db = getDatabase();
 
@@ -21,15 +22,31 @@ const AllUser = () => {
           id: item.key,
         });
       });
-      setUsers([...userList]);
+      setUsers(userList);
     });
   }, [db]);
-
   const findUser = users.filter((item) => item.id !== user.uid);
 
   const handleReq = (data) => {
-    console.log(data);
+    set(push(ref(db, "friendRquest/")), {
+      senderID: user.uid,
+      senderName: user.displayName,
+      recieverID: data.id,
+      recieverName: data.name,
+    });
   };
+
+  useEffect(() => {
+    const starCountRef = ref(db, "friendRquest/");
+    onValue(starCountRef, (snapshot) => {
+      const requestFiend = [];
+      snapshot.forEach((item) => {
+        const datas = item.val();
+        requestFiend.push(datas.senderID + datas.recieverID);
+      });
+      setCancelReq(requestFiend);
+    });
+  }, [db]);
 
   return (
     <>
@@ -45,7 +62,7 @@ const AllUser = () => {
           />
         </div>
         {findUser.map((item) => (
-          <div className="flex items-center justify-between mt-2">
+          <div key={item.id} className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 rounded-full overflow-hidden">
                 <img
@@ -58,9 +75,16 @@ const AllUser = () => {
                 {item.name}
               </h2>
             </div>
-            <div onClick={() => handleReq(item)} className="cursor-pointer">
-              <AddFriendIcon />
-            </div>
+            {cancelReq.includes(user.uid + item.id) ||
+            cancelReq.includes(item.id + user.uid) ? (
+              <button className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1">
+                Cancel Request
+              </button>
+            ) : (
+              <div onClick={() => handleReq(item)} className="cursor-pointer">
+                <AddFriendIcon />
+              </div>
+            )}
           </div>
         ))}
       </div>
