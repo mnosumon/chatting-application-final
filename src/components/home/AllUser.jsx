@@ -3,11 +3,19 @@ import TitleHeading from "../utilities/TitleHeading";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { AddFriendIcon } from "../../assets/svg/AddFriendIcon";
 import { useSelector } from "react-redux";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 
 const AllUser = () => {
   const user = useSelector((state) => state.signUpUser.value);
   const [users, setUsers] = useState([]);
+  const [friendReqList, setFriendReqList] = useState([]);
   const [cancelReq, setCancelReq] = useState([]);
 
   const db = getDatabase();
@@ -28,7 +36,7 @@ const AllUser = () => {
   const findUser = users.filter((item) => item.id !== user.uid);
 
   const handleReq = (data) => {
-    set(push(ref(db, "friendRquest/")), {
+    set(push(ref(db, "friendRequest/")), {
       senderID: user.uid,
       senderName: user.displayName,
       recieverID: data.id,
@@ -37,16 +45,38 @@ const AllUser = () => {
   };
 
   useEffect(() => {
-    const starCountRef = ref(db, "friendRquest/");
+    const starCountRef = ref(db, "friendRequest/");
     onValue(starCountRef, (snapshot) => {
       const requestFiend = [];
       snapshot.forEach((item) => {
         const datas = item.val();
         requestFiend.push(datas.senderID + datas.recieverID);
       });
-      setCancelReq(requestFiend);
+      setFriendReqList(requestFiend);
     });
   }, [db]);
+
+  useEffect(() => {
+    const starCountRef = ref(db, "friendRequest/");
+    onValue(starCountRef, (snapshot) => {
+      const cancelFriend = [];
+      snapshot.forEach((item) => {
+        cancelFriend.push({ ...item.val(), id: item.key });
+      });
+      setCancelReq(cancelFriend);
+    });
+  }, [db]);
+
+  const handleCancelReq = (data) => {
+    const cancelReqFilter = cancelReq.find(
+      (item) => item.recieverID === data.id && item.senderID === user.uid
+    );
+    console.log(cancelReqFilter);
+
+    if (cancelReqFilter) {
+      remove(ref(db, "friendRequest/" + cancelReqFilter.id));
+    }
+  };
 
   return (
     <>
@@ -75,9 +105,12 @@ const AllUser = () => {
                 {item.name}
               </h2>
             </div>
-            {cancelReq.includes(user.uid + item.id) ||
-            cancelReq.includes(item.id + user.uid) ? (
-              <button className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1">
+            {friendReqList.includes(user.uid + item.id) ||
+            friendReqList.includes(item.id + user.uid) ? (
+              <button
+                onClick={() => handleCancelReq(item)}
+                className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1"
+              >
                 Cancel Request
               </button>
             ) : (
