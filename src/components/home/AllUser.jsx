@@ -48,21 +48,13 @@ const AllUser = () => {
     const starCountRef = ref(db, "friendRequest/");
     onValue(starCountRef, (snapshot) => {
       const requestFiend = [];
+      const cancelFriend = [];
       snapshot.forEach((item) => {
         const datas = item.val();
         requestFiend.push(datas.senderID + datas.recieverID);
+        cancelFriend.push({ ...datas, id: item.key });
       });
       setFriendReqList(requestFiend);
-    });
-  }, [db]);
-
-  useEffect(() => {
-    const starCountRef = ref(db, "friendRequest/");
-    onValue(starCountRef, (snapshot) => {
-      const cancelFriend = [];
-      snapshot.forEach((item) => {
-        cancelFriend.push({ ...item.val(), id: item.key });
-      });
       setCancelReq(cancelFriend);
     });
   }, [db]);
@@ -71,7 +63,6 @@ const AllUser = () => {
     const cancelReqFilter = cancelReq.find(
       (item) => item.recieverID === data.id && item.senderID === user.uid
     );
-    console.log(cancelReqFilter);
 
     if (cancelReqFilter) {
       remove(ref(db, "friendRequest/" + cancelReqFilter.id));
