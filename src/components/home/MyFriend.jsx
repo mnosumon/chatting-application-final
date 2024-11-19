@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 const MyFriend = () => {
   const user = useSelector((state) => state.signUpUser.value);
+  console.log(user.uid);
 
   const [acceptalbeFriend, setAcceptalbeFriend] = useState([]);
   const db = getDatabase();
@@ -25,6 +26,10 @@ const MyFriend = () => {
     });
   }, []);
 
+  const handleMessageSelect = (data) => {
+    console.log(data);
+  };
+
   return (
     <>
       <div className="mb-5">
@@ -32,6 +37,7 @@ const MyFriend = () => {
       </div>
       {acceptalbeFriend?.map((item) => (
         <div
+          onClick={() => handleMessageSelect(item)}
           key={item.id}
           className="flex items-center justify-between gap-2 mt-2"
         >
