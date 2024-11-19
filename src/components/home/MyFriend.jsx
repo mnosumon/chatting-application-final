@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import TitleHeading from "../utilities/TitleHeading";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { singleFriend } from "../../features/slice/sentMessageSlice";
 
 const MyFriend = () => {
   const user = useSelector((state) => state.signUpUser.value);
-  console.log(user.uid);
 
   const [acceptalbeFriend, setAcceptalbeFriend] = useState([]);
   const db = getDatabase();
+  const dispatch = useDispatch();
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
     onValue(starCountRef, (snapshot) => {
@@ -27,7 +28,39 @@ const MyFriend = () => {
   }, []);
 
   const handleMessageSelect = (data) => {
-    console.log(data);
+    if (user.uid === data.senderID) {
+      dispatch(
+        singleFriend({
+          status: "single",
+          id: data.recieverID,
+          name: data.recieverName,
+        })
+      );
+      localStorage.setItem(
+        "message",
+        JSON.stringify({
+          status: "single",
+          id: data.recieverID,
+          name: data.recieverName,
+        })
+      );
+    } else {
+      dispatch(
+        singleFriend({
+          status: "single",
+          id: data.senderID,
+          name: data.senderName,
+        })
+      );
+      localStorage.setItem(
+        "message",
+        JSON.stringify({
+          status: "single",
+          id: data.senderID,
+          name: data.senderName,
+        })
+      );
+    }
   };
 
   return (
