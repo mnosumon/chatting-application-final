@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import TitleHeading from "../utilities/TitleHeading";
-import { getDatabase, ref, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  push,
+  set,
+  remove,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 
 const FriendsReq = () => {
@@ -21,7 +28,20 @@ const FriendsReq = () => {
       });
       setRequestFriendList(requestFriend);
     });
-  }, [db]);
+  }, [db, user.uid]);
+
+  const handleFriends = (data) => {
+    set(push(ref(db, "friends/")), {
+      ...data,
+    }).then(() => {
+      remove(ref(db, "friendRequest/" + data.id));
+    });
+  };
+
+  const handleFriendRemove = (data) => {
+    remove(ref(db, "friendRequest/" + data.id));
+  };
+
   return (
     <>
       <div className="mb-5">
@@ -45,10 +65,16 @@ const FriendsReq = () => {
             </h2>
           </div>
           <div className="cursor-pointer">
-            <button className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1">
+            <button
+              onClick={() => handleFriends(item)}
+              className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1"
+            >
               Accept
             </button>
-            <button className="bg-[#D34A4A] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md">
+            <button
+              onClick={() => handleFriendRemove(item)}
+              className="bg-[#D34A4A] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md"
+            >
               Reject
             </button>
           </div>

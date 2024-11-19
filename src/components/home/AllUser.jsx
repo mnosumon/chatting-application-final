@@ -59,6 +59,18 @@ const AllUser = () => {
     });
   }, [db]);
 
+  useEffect(() => {
+    const starCountRef = ref(db, "friends/");
+    onValue(starCountRef, (snapshot) => {
+      const requestFiend = [];
+      snapshot.forEach((item) => {
+        const datas = item.val();
+        requestFiend.push(datas.senderID + datas.recieverID);
+      });
+      setFriendReqList(requestFiend);
+    });
+  }, [db]);
+
   const handleCancelReq = (data) => {
     const cancelReqFilter = cancelReq.find(
       (item) => item.recieverID === data.id && item.senderID === user.uid
