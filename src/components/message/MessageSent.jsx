@@ -14,6 +14,11 @@ const MessageSent = () => {
   const user = useSelector((state) => state.signUpUser.value);
   const [text, setText] = useState("");
   const [message, setMessage] = useState([]);
+  // console.log("reciever", friend.id);
+  // console.log("user", user.uid);
+
+  // friend = sender;
+  // user = reciever;
 
   const db = getDatabase();
   const time = `${new Date().getFullYear()}-${
@@ -25,7 +30,7 @@ const MessageSent = () => {
   });
 
   const handleSent = () => {
-    if (friend.status === "single") {
+    if (friend?.status === "single") {
       set(push(ref(db, "message/")), {
         whoSenderID: user.uid,
         whoSenderName: user.displayName,
@@ -48,12 +53,12 @@ const MessageSent = () => {
             datas.whoSenderID === user.uid) ||
           (friend.id === datas.whoSenderID && user.uid === datas.whoRecieverID)
         ) {
-          messageArr.push(...datas);
+          messageArr.push({ ...datas });
         }
       });
       setMessage(messageArr);
     });
-  }, [user.uid, friend.id, db]);
+  }, [user.uid, friend, db]);
 
   return (
     <>
@@ -66,12 +71,26 @@ const MessageSent = () => {
           />
         </div>
         <h2 className="font-inter_semiBold text-xl text-[#000]">
-          {friend.name}
+          {friend?.name}
         </h2>
       </div>
       <div className="h-[500px] overflow-y-auto">
-        <TextRight />
-        <TextLeft />
+        {friend?.status === "single"
+          ? message?.map((item) => (
+              <div key={item.id}>
+                {friend?.id === item.whoSenderID &&
+                user.uid === item.whoRecieverID ? (
+                  <div className="w-3/5 mr-auto mt-2 mx-2">
+                    <TextLeft item={item} />
+                  </div>
+                ) : (
+                  <div className="w-3/5 ml-auto flex justify-end mt-2 mx-2">
+                    <TextRight item={item} />
+                  </div>
+                )}
+              </div>
+            ))
+          : ""}
       </div>
       <div className="w-4/5 bg-[#F9F9F9] rounded-md mb-3 mx-auto grid grid-cols-[1fr,3fr,1fr] items-center gap-4 p-4">
         <div className=" flex items-center gap-3 ">
