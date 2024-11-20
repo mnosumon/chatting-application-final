@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { MicrophoneIcon } from "../../assets/svg/MicrophoneIcon";
 import { EmojiIcon } from "../../assets/svg/EmojiIcon";
 import { GellaryIcon } from "../../assets/svg/GellaryIcon";
 import { useSelector } from "react-redux";
-import { getDatabase, push, ref, set } from "firebase/database";
+import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import TextLeft from "./TextLeft";
 import TextRight from "./TextRight";
+import { formatDistance } from "date-fns";
 
 const MessageSent = () => {
   const friend = useSelector((state) => state.singleFriend.value);
   const user = useSelector((state) => state.signUpUser.value);
   const [text, setText] = useState("");
+  const [message, setMessage] = useState([]);
 
   const db = getDatabase();
   const time = `${new Date().getFullYear()}-${
     new Date().getMonth() - 1
   }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}`;
+
+  const sormet = formatDistance(time, new Date(), {
+    addSuffix: true,
+  });
 
   const handleSent = () => {
     if (friend.status === "single") {
@@ -30,6 +36,24 @@ const MessageSent = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const starCountRef = ref(db, "message/");
+    onValue(starCountRef, (snapshot) => {
+      const messageArr = [];
+      snapshot.forEach((item) => {
+        const datas = item.val();
+        if (
+          (datas.whoRecieverID === friend.id &&
+            datas.whoSenderID === user.uid) ||
+          (friend.id === datas.whoSenderID && user.uid === datas.whoRecieverID)
+        ) {
+          messageArr.push(...datas);
+        }
+      });
+      setMessage(messageArr);
+    });
+  }, [user.uid, friend.id, db]);
 
   return (
     <>
