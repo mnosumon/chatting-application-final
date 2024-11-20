@@ -4,13 +4,17 @@ import TitleHeading from "../utilities/TitleHeading";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import { singleFriend } from "../../features/slice/sentMessageSlice";
+import { useLocation } from "react-router-dom";
 
 const MyFriend = () => {
   const user = useSelector((state) => state.signUpUser.value);
 
   const [acceptalbeFriend, setAcceptalbeFriend] = useState([]);
+  const [activeFriend, setActiveFriend] = useState();
   const db = getDatabase();
   const dispatch = useDispatch();
+  const location = useLocation();
+
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
     onValue(starCountRef, (snapshot) => {
@@ -61,6 +65,7 @@ const MyFriend = () => {
         })
       );
     }
+    setActiveFriend(data.id);
   };
 
   return (
@@ -72,7 +77,11 @@ const MyFriend = () => {
         <div
           onClick={() => handleMessageSelect(item)}
           key={item.id}
-          className="flex items-center justify-between gap-2 mt-2"
+          className={`flex items-center justify-between gap-2 mt-2 rounded-md px-2 py-1 hover:bg-green-400 transition-all duration-200 ${
+            location.pathname == "/message" && activeFriend === item.id
+              ? "bg-green-400"
+              : ""
+          }`}
         >
           <div className="flex items-center gap-2">
             <div className="w-16 h-16 rounded-full overflow-hidden">
