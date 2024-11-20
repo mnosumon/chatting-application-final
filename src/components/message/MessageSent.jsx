@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import { MicrophoneIcon } from "../../assets/svg/MicrophoneIcon";
 import { EmojiIcon } from "../../assets/svg/EmojiIcon";
@@ -8,18 +8,20 @@ import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import TextLeft from "./TextLeft";
 import TextRight from "./TextRight";
 import { formatDistance } from "date-fns";
+import EmojiPicker from "emoji-picker-react";
 
 const MessageSent = () => {
   const friend = useSelector((state) => state.singleFriend.value);
   const user = useSelector((state) => state.signUpUser.value);
   const [text, setText] = useState("");
   const [message, setMessage] = useState([]);
+  const [emojiShow, setEmojiShow] = useState(false);
   // console.log("reciever", friend.id);
   // console.log("user", user.uid);
 
   // friend = sender;
   // user = reciever;
-
+  const scrollRef = useRef();
   const db = getDatabase();
   const time = `${new Date().getFullYear()}-${
     new Date().getMonth() - 1
@@ -30,16 +32,20 @@ const MessageSent = () => {
   });
 
   const handleSent = () => {
-    if (friend?.status === "single") {
-      set(push(ref(db, "message/")), {
-        whoSenderID: user.uid,
-        whoSenderName: user.displayName,
-        whoRecieverID: friend.id,
-        whoRecieverName: friend.name,
-        content: text,
-        date: time,
-      });
+    if (text !== "") {
+      if (friend?.status === "single") {
+        set(push(ref(db, "message/")), {
+          whoSenderID: user.uid,
+          whoSenderName: user.displayName,
+          whoRecieverID: friend.id,
+          whoRecieverName: friend.name,
+          content: text,
+          date: time,
+        });
+      }
     }
+
+    setText("");
   };
 
   useEffect(() => {
@@ -60,6 +66,27 @@ const MessageSent = () => {
     });
   }, [user.uid, friend, db]);
 
+  const handleEmojiPicker = (data) => {
+    setText(data.emoji + text);
+    setEmojiShow(false);
+  };
+
+  const handleEmojiShow = () => {
+    setEmojiShow(!emojiShow);
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSent();
+    }
+  };
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [message]);
+
   return (
     <>
       <div className="flex gap-3 items-center bg-[#F9F9F9] px-3 py-2">
@@ -76,8 +103,8 @@ const MessageSent = () => {
       </div>
       <div className="h-[500px] overflow-y-auto">
         {friend?.status === "single"
-          ? message?.map((item) => (
-              <div key={item.id}>
+          ? message?.map((item, index) => (
+              <div ref={scrollRef} key={index}>
                 {friend?.id === item.whoSenderID &&
                 user.uid === item.whoRecieverID ? (
                   <div className="w-3/5 mr-auto mt-2 mx-2">
@@ -97,8 +124,15 @@ const MessageSent = () => {
           <div className="cursor-pointer">
             <MicrophoneIcon />
           </div>
-          <div className="cursor-pointer">
-            <EmojiIcon />
+          <div className="cursor-pointer relative">
+            <div onClick={handleEmojiShow} className="">
+              <EmojiIcon />
+            </div>
+            {emojiShow && (
+              <div className="absolute bottom-10 left-1">
+                <EmojiPicker onEmojiClick={handleEmojiPicker} />
+              </div>
+            )}
           </div>
           <div className="cursor-pointer">
             <GellaryIcon />
@@ -106,6 +140,8 @@ const MessageSent = () => {
         </div>
         <div className=" font-inter_regular text-lg text-[#484848]">
           <input
+            onKeyUp={handleEnter}
+            value={text}
             onChange={(e) => setText(e.target.value)}
             className="p-3 w-full border border-[#D8D8D8] outline-none rounded-md"
             type="text"

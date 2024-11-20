@@ -79,7 +79,7 @@ const MyFriend = () => {
           key={item.id}
           className={`flex items-center justify-between gap-2 mt-2 rounded-md px-2 py-1 hover:bg-green-400 transition-all duration-200 ${
             location.pathname == "/message" && activeFriend === item.id
-              ? "bg-green-400"
+              ? "bg-green-400 cursor-pointer"
               : ""
           }`}
         >
