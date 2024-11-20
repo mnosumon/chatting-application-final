@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import AvaterImg from "../../assets/image/natural01.jpg";
 import TitleHeading from "../utilities/TitleHeading";
-import { getDatabase, ref, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  remove,
+  set,
+  push,
+} from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import { singleFriend } from "../../features/slice/sentMessageSlice";
 import { useLocation } from "react-router-dom";
 
 const MyFriend = () => {
   const user = useSelector((state) => state.signUpUser.value);
+  const friend = useSelector((state) => state.singleFriend.value);
 
   const [acceptalbeFriend, setAcceptalbeFriend] = useState([]);
   const [activeFriend, setActiveFriend] = useState();
@@ -68,10 +76,28 @@ const MyFriend = () => {
     setActiveFriend(data.id);
   };
 
+  const handleFriendUnfriend = (data) => {
+    remove(ref(db, "friends/" + data.id));
+  };
+
+  const handleBlock = (data) => {
+    if (user.uid === data.senderID) {
+      set(push(ref(db, "blockList/")), {
+        blockId: data.recieverID,
+        blockName: data.recieverName,
+      });
+    } else {
+      set(push(ref(db, "blockList/")), {
+        blockId: data.senderID,
+        blockName: data.senderName,
+      });
+    }
+  };
+
   return (
     <>
       <div className="mb-5">
-        <TitleHeading content="Friend requests" />
+        <TitleHeading content="Friends" />
       </div>
       {acceptalbeFriend?.map((item) => (
         <div
@@ -96,10 +122,16 @@ const MyFriend = () => {
             </h2>
           </div>
           <div className="cursor-pointer">
-            <button className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1">
+            <button
+              onClick={() => handleFriendUnfriend(item)}
+              className="bg-[#4A81D3] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md mr-1"
+            >
               Unfriend
             </button>
-            <button className="bg-[#D34A4A] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md">
+            <button
+              onClick={() => handleBlock(item)}
+              className="bg-[#D34A4A] text-[#FFF] text-sm font-inter_medium px-5 py-2 rounded-md"
+            >
               Block
             </button>
           </div>

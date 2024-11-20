@@ -16,7 +16,6 @@ const Navbar = () => {
   const user = useSelector((state) => state.signUpUser.value);
 
   const location = useLocation();
-  console.log(location.pathname);
 
   const auth = getAuth();
   const dispatch = useDispatch();
@@ -66,7 +65,7 @@ const Navbar = () => {
           <NavLink to="/message" className="text-6xl text-white ">
             <MessageIcon />
           </NavLink>
-          {location.pathname == "/message" && (
+          {location.pathname === "/message" && (
             <div className="w-[12%] h-full bg-white absolute top-0 -right-[65%]"></div>
           )}
         </div>
