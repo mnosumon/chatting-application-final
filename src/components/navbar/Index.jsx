@@ -4,7 +4,7 @@ import { HomeIcon } from "../../assets/svg/HomeIcon";
 import { MessageIcon } from "../../assets/svg/MessageIcon";
 import { BackSquerIcon } from "../../assets/svg/BackSquerIcon";
 import AvaterImg from "../../assets/image/natural01.jpg";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutUser } from "../../features/slice/registrationSlice";
 import { getAuth, signOut } from "firebase/auth";
@@ -14,6 +14,9 @@ import { createPortal } from "react-dom";
 const Navbar = () => {
   const [modalShow, setModalShow] = useState(false);
   const user = useSelector((state) => state.signUpUser.value);
+
+  const location = useLocation();
+  console.log(location.pathname);
 
   const auth = getAuth();
   const dispatch = useDispatch();
@@ -55,11 +58,18 @@ const Navbar = () => {
           <NavLink to="/">
             <HomeIcon />
           </NavLink>
-          <div className="w-[12%] h-full bg-white absolute top-0 -right-full"></div>
+          {location.pathname === "/" && (
+            <div className="w-[12%] h-full bg-white absolute top-0 -right-[65%]"></div>
+          )}
         </div>
-        <NavLink to="/message" className="text-6xl text-white">
-          <MessageIcon />
-        </NavLink>
+        <div className="relative">
+          <NavLink to="/message" className="text-6xl text-white ">
+            <MessageIcon />
+          </NavLink>
+          {location.pathname == "/message" && (
+            <div className="w-[12%] h-full bg-white absolute top-0 -right-[65%]"></div>
+          )}
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <div className="text-2xl text-white">

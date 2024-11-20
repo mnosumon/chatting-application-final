@@ -16,20 +16,12 @@ const MessageSent = () => {
   const [text, setText] = useState("");
   const [message, setMessage] = useState([]);
   const [emojiShow, setEmojiShow] = useState(false);
-  // console.log("reciever", friend.id);
-  // console.log("user", user.uid);
 
-  // friend = sender;
-  // user = reciever;
   const scrollRef = useRef();
   const db = getDatabase();
   const time = `${new Date().getFullYear()}-${
-    new Date().getMonth() - 1
-  }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}`;
-
-  const sormet = formatDistance(time, new Date(), {
-    addSuffix: true,
-  });
+    new Date().getMonth() + 1
+  }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`;
 
   const handleSent = () => {
     if (text !== "") {
@@ -44,7 +36,6 @@ const MessageSent = () => {
         });
       }
     }
-
     setText("");
   };
 
@@ -108,11 +99,11 @@ const MessageSent = () => {
                 {friend?.id === item.whoSenderID &&
                 user.uid === item.whoRecieverID ? (
                   <div className="w-3/5 mr-auto mt-2 mx-2">
-                    <TextLeft item={item} />
+                    <TextLeft item={item} formatDistance={formatDistance} />
                   </div>
                 ) : (
-                  <div className="w-3/5 ml-auto flex justify-end mt-2 mx-2">
-                    <TextRight item={item} />
+                  <div className="w-3/5 ml-auto flex flex-col items-end mt-2 mx-2">
+                    <TextRight item={item} formatDistance={formatDistance} />
                   </div>
                 )}
               </div>
@@ -139,13 +130,15 @@ const MessageSent = () => {
           </div>
         </div>
         <div className=" font-inter_regular text-lg text-[#484848]">
-          <input
+          <textarea
             onKeyUp={handleEnter}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="p-3 w-full border border-[#D8D8D8] outline-none rounded-md"
+            className="p-3 w-full border border-[#D8D8D8] outline-none rounded-md resize-none overflow-hidden"
             type="text"
             placeholder="type here . . ."
+            name="sms"
+            id="sms"
           />
         </div>
         <button
