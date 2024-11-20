@@ -5,15 +5,18 @@ import { EmojiIcon } from "../../assets/svg/EmojiIcon";
 import { GellaryIcon } from "../../assets/svg/GellaryIcon";
 import { useSelector } from "react-redux";
 import { getDatabase, push, ref, set } from "firebase/database";
+import TextLeft from "./TextLeft";
+import TextRight from "./TextRight";
 
 const MessageSent = () => {
   const friend = useSelector((state) => state.singleFriend.value);
   const user = useSelector((state) => state.signUpUser.value);
   const [text, setText] = useState("");
-  console.log(friend);
-  console.log(user);
 
   const db = getDatabase();
+  const time = `${new Date().getFullYear()}-${
+    new Date().getMonth() - 1
+  }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}`;
 
   const handleSent = () => {
     if (friend.status === "single") {
@@ -23,6 +26,7 @@ const MessageSent = () => {
         whoRecieverID: friend.id,
         whoRecieverName: friend.name,
         content: text,
+        date: time,
       });
     }
   };
@@ -41,7 +45,10 @@ const MessageSent = () => {
           {friend.name}
         </h2>
       </div>
-      <div className="h-[500px]"></div>
+      <div className="h-[500px] overflow-y-auto">
+        <TextRight />
+        <TextLeft />
+      </div>
       <div className="w-4/5 bg-[#F9F9F9] rounded-md mb-3 mx-auto grid grid-cols-[1fr,3fr,1fr] items-center gap-4 p-4">
         <div className=" flex items-center gap-3 ">
           <div className="cursor-pointer">
