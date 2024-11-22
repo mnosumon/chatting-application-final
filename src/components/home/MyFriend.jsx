@@ -10,7 +10,7 @@ import {
   push,
 } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
-import { singleFriend } from "../../features/slice/sentMessageSlice";
+import { singleFriend, userBlock } from "../../features/slice/sentMessageSlice";
 import { useLocation } from "react-router-dom";
 
 const MyFriend = () => {
@@ -81,19 +81,21 @@ const MyFriend = () => {
   };
 
   const handleBlock = (data) => {
-    if (user.uid === data.senderID) {
-      set(push(ref(db, "blockList/")), {
-        blockId: data.recieverID,
-        blockName: data.recieverName,
-      });
-    } else {
-      set(push(ref(db, "blockList/")), {
-        blockId: data.senderID,
-        blockName: data.senderName,
-      });
-    }
+    dispatch(userBlock());
+    localStorage.removeItem("message");
   };
 
+  // if (user.uid === data.senderID) {
+  //   set(push(ref(db, "blockList/")), {
+  //     blockId: data.recieverID,
+  //     blockName: data.recieverName,
+  //   });
+  // } else {
+  //   set(push(ref(db, "blockList/")), {
+  //     blockId: data.senderID,
+  //     blockName: data.senderName,
+  //   });
+  // }
   return (
     <>
       <div className="mb-5">

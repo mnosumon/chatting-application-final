@@ -19,6 +19,17 @@ const AllUser = () => {
   const [friendReqList, setFriendReqList] = useState([]);
   const [cancelReq, setCancelReq] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [name, setName] = useState("");
+
+  console.log(name);
+  useEffect(() => {
+    users.forEach((item) => {
+      if (item.name == searchName) {
+        setName(item.name);
+      }
+    });
+  });
 
   const db = getDatabase();
 
@@ -91,6 +102,7 @@ const AllUser = () => {
       <div className="px-3">
         <div className="my-3 ">
           <input
+            onChange={(e) => setSearchName(e.target.value)}
             className="w-full p-3 bg-[#F8F8F8]  outline-none rounded-md"
             type="text"
             placeholder="Search user..."
