@@ -22,7 +22,6 @@ const AllUser = () => {
   const [searchName, setSearchName] = useState("");
   const [name, setName] = useState("");
 
-  console.log(name);
   useEffect(() => {
     users.forEach((item) => {
       if (item.name == searchName) {
@@ -30,6 +29,8 @@ const AllUser = () => {
       }
     });
   });
+
+  const findaArr = users.find((item) => item.name == name);
 
   const db = getDatabase();
 
@@ -108,6 +109,7 @@ const AllUser = () => {
             placeholder="Search user..."
           />
         </div>
+        {findaArr ? <h1>{findaArr.name}</h1> : ""}
         {findUser?.map((item) => (
           <div key={item.id} className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-3">
